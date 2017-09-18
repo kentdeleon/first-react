@@ -1,0 +1,540 @@
+Babel
+webpack
+
+Setting up webpack
+
+mkdir es6
+cd es6
+npm init -y
+npm install --save-dev webpack
+create new folder build
+	create index.html
+	add script src ="bundle.js"
+
+create new app folder
+	create index.js
+
+create new webpack.config.js under folder root directory
+and add the following
+
+/*
+
+module.exports = {
+	entry: ['./app/index.js'],
+	output: {
+		path: './build',
+		filename: 'bundle.js'
+	}
+};
+
+
+if error persists, install webpack globally. 
+command npm install webpack -g, then on webpack.config.js file modify the following with
+path: __dirname + '/build' 
+
+*/
+
+modify script section under package.json
+"build" : "webpack"
+
+then on command line run 
+npm run build
+-----------------
+
+Setting up Babel
+npm install babel-core babel-loader webpack-dev-server babel-preset-es2015 babel-polyfill --save-dev
+
+
+babel-core - is a main module contains logic for transforming es code to javascript code
+babel-loader - a module that actually transform es code to javascript code
+webpack-dev-server - for automatic live code update
+babel-preset-es2015 - for allowing convertion of es code to es2015
+babel-polyfill - 
+
+need to update the webpack.config.js
+
+  module: {
+    loaders: [
+        loader: 'babel-loader',
+        test: /\.js$/,  
+         exclude: /node_modules/
+     ]
+  },
+
+  devServer: {
+     port: 3001,
+     contentBase: './build',
+     inline: true
+   }
+
+
+modify package.json
+
+"babel": {
+    "presets": ["es2015"],
+    "
+ }
+
+add another script
+
+"start": "webpack-dev-server"
+----------------
+
+Setting up JSX
+
+npm install babel-preset-react react react-dom react-bootstrap --save-dev
+
+maksure react preset is present in package.json
+
+
+create components folder under app
+	create file Global.js
+----------------
+
+BLOCK SCOPING
+TEMPLATE LITERALS
+Operating and Destructuring Assignment
+  Spread Operator = Rest Parameters
+	 i.e. let a = ['Dana', 'Erik', 'Frank'];
+	      let b = ['Rick', ...a];
+        function collect(...a){
+console.log(a);
+}
+
+collect(3,6,9,12,15);
+
+
+DESTRUCTURING
+
+let z = [4,5,6];
+let [four,five] = z;
+console.log(four, five); //4 5
+
+let animals = ["Simba", "Zazu", "Ed"];
+let [lion, bird] = animals; //Simba Zazu
+
+let king = { name: 'Mufasa', kids: 1};
+let {name, kids} = king;
+or
+let name = king.name;
+let kids = king.kids;
+console.log(name, kids); //Mufasa 1
+
+
+let son = {name: 'Simba', parents: 2};
+let name, parents;
+({name, parents} = son);
+console.log(name,parents); //Simba 2
+
+----------------------------
+
+Arrow Functions
+Pre-es6 syntax: function() {..} 
+es6 syntax: () => {..}
+
+by default arrow function is anonymous
+
+i.e.
+
+function cheer(){
+	console.log("Woohoo!");
+}
+
+cheer();
+
+let cheer = () => {
+	console.log("Woohoo!");
+}
+
+cheer();
+-----------------------------
+
+Helper Methods
+
+The map method creates new arrays by calling a function on individual elements
+in an original array.
+
+i.e.
+
+let values = [20,30,40];
+let double = (n) => {
+  return n*2;
+}
+
+
+let doubled = values.map(double);
+
+console.log(doubled);
+
+
+or 
+
+let values = [20, 30, 40];
+let doubled = values.map( (n) => n*2);
+
+console.log(doubled);
+
+===============
+the filter method creates new arrays based on an original array and a certain test
+on each of its element.
+
+i.e.
+
+let points = [7, 16, 21, 4, 3, 22, 5];
+let highScores = points.filter( (n) => { return n > 15 });
+
+console.log(highScores);
+
+
+=========================	
+
+String Manipulation and Number Checking
+
+-String.repeat() returns a new string of concatenated copies.
+i.e. 
+let b = "wooh" + "oo".repeat(50);
+console.log(b);
+
+let b = `woo${'oo'.repeat(50)}`;
+console.log(b);
+
+-Searching with startsWith, endsWith, includes and more...
+
+i.e. 
+console.log("butterfly".startsWith("butter")); //true
+console.log("butterfuly".startsWith("fly")); //true
+console.log("butterfuly".includes("fly")); //true
+
+-Number checking for type and safety
+
+i.e.
+
+const addToCart = (item, number) => {
+ return Number.isFinite(number);
+}
+
+console.log(addToCart('shirt', 5) ); //true
+
+const addToCart = (item, number) => {
+ return Number.isSafeInteger(number);
+}
+
+console.log(addToCart('shirt', Math.pow(2, 54)) ); //false
+-----------------------------
+MODULES - 
+Split code into unique files based on relevant data.
+
+i.e.
+
+fellowship.js file
+
+const fellowship = ['Frodo', 'Samwise', 'Gandalf'];
+const total = fellowship.length;
+export { fellowship, total};
+
+index.js
+
+ import {fellowship, total} from './fellowship';
+console.log(fellowship, total);
+
+
+
+math.js
+
+const add = (a,b) => {
+return a + b;
+}
+
+const multiply = (a,b) => {
+return a*b;
+}
+
+export {add, multiply};
+export default multiply;
+
+index.js
+
+import {add, multiply} from './math';
+console.log(multiply(5,10));
+
+with default
+
+import multiply from './math';
+console.log(multiply(5,10));
+
+=====================================
+
+#Classes in JavaScript
+-Relate to each other through inheritanec
+-Defined with the class keyword and uses a constructor
+-The extends keyword create child classes
+
+class Animal {
+  constructor(name, height){
+	this.name = name;
+	this.height = height;
+	}
+  hello() {
+     console.log(`Hi! I'm ${this.name}`);
+  }
+}
+
+let king = new Animal('Mufasa', 4.5);
+
+console.log(king);
+
+#Inheriting from Classes
+
+
+class Lion extends Animal {
+  constructor(name, height, color){
+      super(name, height);
+      this.color = color;
+  }
+}
+
+let son = new Lion("Simba", 2, "golden");
+console.log(son);
+
+-------------------------------------
+
+Set
+
+.add()
+.has()
+.values()
+
+let chars = 'a1231lkalskjaldkajoi1po23iad123kgldkdl';
+let charSet = new Set(chars);
+console.log(charSet);
+
+
+Map
+
+.set()
+
+i.e
+let numArr = [[1,'one'], [2, 'two'], [3, 'three']];
+let valMap = new Map(numArr);
+
+for (let [key,value] of valMap.entries()){
+    console.log(`${key} points to value ${value}`);
+}
+
+
+another example for counting the occurence of letter in the string
+
+let string = '12313131313skdfklsflskfsk';
+let letters = new Map();
+
+for(let i = 0; i < string.length; i++){
+  let letter = string[i];
+  if(!letters.has(letter){
+       letters.set(letter,1);
+   }else{
+      letters.set(letter, letters.get(letter) =1)
+  }
+
+}
+
+console.log(letters);
+
+
+------------------------
+
+Closure
+const product = x => y => y*x;
+let mult5 = product(5)(2);
+console.log(mult5);
+
+another example with private methods
+const budget = () => {
+    let balance = 0;
+    let updateBalance = (val) => balance += val;
+
+    const deposit = () => updateBalance(20);
+    const checkBalance = () => balance;
+
+    return { deposit, checkBalance};
+};
+
+let wallet = budget();
+wallet.deposit();
+wallet.deposit()
+console.log(wallet.checkBalance());
+
+------------------------------------
+
+
+//Generators
+
+// function* letterMaker(){
+       
+//     yield 'a';
+//     yield 'b';
+//     yield 'c';
+// }
+
+
+// let letterGen = letterMaker();
+// console.log(letterGen.next().value);
+// console.log(letterGen.next().value);
+// console.log(letterGen.next().value);
+
+// function* countMaker(){
+//     let count = 0;
+//     while(count < 3){
+//         yield count += 1;
+//     }
+// }
+
+// let countGen = countMaker();
+// console.log(countGen.next().value);
+// console.log(countGen.next().value);
+// console.log(countGen.next().value);
+// console.log(countGen.next().value);
+
+
+// function* evens(){
+//     let count = 0;
+//     while(true){
+//         let reset = yield count += 2;
+//         if(reset){
+//             count = 0;
+//         }
+//     }
+// }
+
+// let sequence = evens();
+// console.log(sequence.next().value);
+// console.log(sequence.next().value);
+// console.log(sequence.next().value);
+// console.log(sequence.next(true).value);
+// console.log(sequence.next().value);
+
+//Iterators
+// const arrayIterator = (array) => {
+//     let index = 0;
+//     return {
+//         next: () => {
+//             if(index < array.length){
+//                 let next = array[index];
+//                 index += 1;
+//                 return next;
+//             }
+//         }
+//     }
+// }
+
+// // let it = arrayIterator([1,2,3,4,5]);
+
+// // console.log(it.next());
+// // console.log(it.next());
+// // console.log(it.next());
+// // console.log(it.next());
+
+
+//Generator Iterator
+
+// function* arrayIterator(){
+//     //one way to iterate on each arguments
+//     // for(let args of arguments){
+//     //     yield args;
+//     // }
+
+//     //shortest way possible
+//     yield* arguments;
+// }
+
+
+// var it = arrayIterator(1,2,3,4);
+// console.log(it.next().value);
+
+-------------------------------------
+
+Promises
+
+http://jsonplaceholder.typicode.com/
+https://www.googleapis.com/books/v1/volumes?q=isbn:0747532699
+
+// function asyncPromises(){
+//     return new Promise((resolve, reject) => {
+//         // resolve('Resolved Promise data');
+//         // reject('Rejected data promises');
+//         setTimeout(() => resolve('Resolved Promise Data'), 3000);
+//     });
+// }
+
+// let p = asyncPromises();
+
+
+// p.then(response => {
+//     console.log(response);
+// }).catch(error => {
+//     console.log(error);
+// })
+
+// console.log('After promise consumptiom');v
+
+
+//const root = 'http://jsonplaceholder.typicode.com/posts/1';
+const root = 'https://www.googleapis.com/books/v1/volumes?q=isbn:0747532699';
+
+fetch(root, {method: 'GET'})
+.then(response => response.json())
+.then(response => {
+  console.log(response)
+});
+
+
+--------------------------
+
+ES7 and ES8
+
+// let x = 2**4;
+// console.log(x);
+
+
+// let obj = {a: 'one', b: 'two', c:'three'};
+
+// let keys = Object.keys(obj);
+// let values = Object.values(obj);
+// let entries = Object.entries(obj);
+
+// console.log(keys);
+// console.log(values);
+// console.log(entries);
+
+
+async function async_one(){
+    return "async_one ()";
+}
+
+
+async function async_two(){
+    return "async_two ()";
+}
+
+//
+
+async function async_three(){
+    const one = await async_one();
+    console.log(one);
+    const two = await async_two();
+    console.log(two);
+}
+
+async_three();
+
+async function async_four(){
+    const[res_one, res_two] = await Promise.all(
+        [
+            async_one(),
+            async_two()
+        ]
+    )
+
+    console.log(res_one, res_two);
+}
+
+=============================
